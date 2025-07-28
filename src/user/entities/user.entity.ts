@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, TableInheritance } from 'typeorm';
-
+import { UserRole } from '../dto/register-user.dto'; 
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'role' } })
 export class User {
@@ -17,6 +17,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({ type: 'varchar' })
+  role: UserRole;
 
   @Column({ nullable: true, type: 'varchar' })
   profilePicture: string | null;

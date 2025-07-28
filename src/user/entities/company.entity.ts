@@ -1,7 +1,9 @@
 import { ChildEntity, Column } from 'typeorm';
-import { User } from '../user/user.entity/user.entity';
+import { User } from './user.entity';
+import { UserRole } from '../dto/register-user.dto'; 
 
-@ChildEntity()
+
+@ChildEntity(UserRole.COMPANY)
 export class Company extends User {
   @Column()
   nameCompany: string;
