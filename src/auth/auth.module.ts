@@ -4,30 +4,28 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-import { jwtConstants } from './constants'; // Your JWT secret and expiration
-import { UserModule } from '../user/user.module';
+import { jwtConstants } from './constants'; 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../user/user.entity/user.entity';
-import { AssociationModule } from '../association/association.module';
-import { CompanyModule } from '../company/company.module';
-import { SimpleUserModule } from '../simpleUser/simple-user.module';
-
+import { User } from '../user/entities/user.entity';
+import { SimpleUser } from '../user/entities/simple-user.entity';
+import { Company } from '../user/entities/company.entity';
+import { Association } from '../user/entities/association.entity';
+import { RolesGuard } from './guards/roles.guard'; 
+import { UserService } from '../user/user.service'; 
+import { CloudinaryModule } from '../cloudinary/cloudinary.module'; // <-- IMPORT THIS
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-    UserModule,
-    AssociationModule, 
-    CompanyModule,     
-    SimpleUserModule,  
+    TypeOrmModule.forFeature([User, SimpleUser, Company, Association]),  
     PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret, // Your JWT secret
-      signOptions: { expiresIn: '60m' }, // Token expiration
+      secret: jwtConstants.secret, 
+      signOptions: { expiresIn: '60m' }, 
     }),
+    CloudinaryModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, UserService, RolesGuard],
   controllers: [AuthController],
   exports: [AuthService],
 })

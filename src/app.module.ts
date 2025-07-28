@@ -1,21 +1,20 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { User } from './user/user.entity/user.entity';
+import { User } from './user/entities/user.entity';
+import { Association } from './user/entities/association.entity'; 
+import { Company } from './user/entities/company.entity';       
+import { SimpleUser } from './user/entities/simple-user.entity'; 
 import { AuthModule } from './auth/auth.module';
-import { AssociationModule } from './association/association.module';
-import { CompanyModule } from './company/company.module';
-import { Association } from './association/association.entity';
-import { Company } from './company/company.entity';
-import { SimpleUser } from './simpleUser/simple-user.entity';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ConfigModule } from '@nestjs/config'; 
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true, // Rend les variables d'environnement disponibles globalement
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -29,8 +28,7 @@ import { SimpleUser } from './simpleUser/simple-user.entity';
     }),
     UserModule,
     AuthModule,
-    AssociationModule,
-    CompanyModule,
+    CloudinaryModule
   ],
   controllers: [AppController],
   providers: [AppService],

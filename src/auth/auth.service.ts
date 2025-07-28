@@ -3,46 +3,30 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../user/user.entity/user.entity';
-import { CreateAssociationDto } from '../association/dto/create-association.dto';
-import { CreateCompanyDto } from '../company/dto/create-company.dto';
-import { CreateSimpleUserDto } from '../simpleUser/dto/create-simple-user.dto';
-import { AssociationService } from '../association/association.service';
-import { CompanyService } from '../company/company.service';
-import { SimpleUserService } from '../simpleUser/simple-user.service';
-
-
-
+import { User } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service'; 
+import { RegisterUserDto } from '../user/dto/register-user.dto'; 
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class AuthService {
-    
   constructor(
     private jwtService: JwtService,
     @InjectRepository(User)
     private userRepo: Repository<User>,
-    private readonly associationService: AssociationService,
-  private readonly companyService: CompanyService,
-  private readonly simpleUserService: SimpleUserService,
+    private readonly userService: UserService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async registerAssociation(
-    dto: CreateAssociationDto,
-    file: Express.Multer.File, 
-  ) {
-    return this.associationService.create(dto, file);
+  async register(dto: RegisterUserDto, file?: Express.Multer.File): Promise<User> {
+    let imageUrl: string | null = null;
+    if (file) {
+      // Uploadez l'image sur Cloudinary et récupérez l'URL
+      imageUrl = await this.cloudinaryService.uploadImage(file, 'profile_pictures'); // Spécifiez un dossier Cloudinary
+    }
+    // Passez l'URL de l'image au UserService
+    return this.userService.register(dto, imageUrl); // <-- Passez l'URL au lieu du fichier brut
   }
-
-async registerCompany(
-  dto: CreateCompanyDto,
-  file?: Express.Multer.File,) {
-  return this.companyService.create(dto, file);
-}
-
-async registerSimpleUser(dto: CreateSimpleUserDto,
-  file?: Express.Multer.File) {
-  return this.simpleUserService.create(dto, file);
-}
 
   async login(email: string, password: string) {
     const user = await this.userRepo.findOne({ where: { email } });
@@ -51,7 +35,7 @@ async registerSimpleUser(dto: CreateSimpleUserDto,
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new UnauthorizedException('Invalid password');
 
-    const payload = { sub: user.id, email: user.email};
+    const payload = { sub: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
     return { access_token: token };
   }
