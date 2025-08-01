@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
-import { Association } from './user/entities/association.entity'; 
-import { Company } from './user/entities/company.entity';       
-import { SimpleUser } from './user/entities/simple-user.entity'; 
+import { Association } from './user/entities/association.entity';
+import { Company } from './user/entities/company.entity';
+import { SimpleUser } from './user/entities/simple-user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule } from '@nestjs/config'; 
+import { EventsModule } from './events/events.module'; 
+import { MessagesModule } from './messages/messages.module'; 
 
 @Module({
   imports: [
@@ -28,7 +30,9 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UserModule,
     AuthModule,
-    CloudinaryModule
+    CloudinaryModule,
+    EventsModule, 
+    MessagesModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

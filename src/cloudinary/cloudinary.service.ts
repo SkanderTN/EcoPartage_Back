@@ -13,7 +13,8 @@ export class CloudinaryService {
         { folder: folder }, // Spécifiez le dossier dans Cloudinary
         (error, result) => {
           if (error) return reject(error);
-          if (!result) return reject(new Error('Cloudinary upload result is undefined.')); // <-- AJOUTÉ : Vérification de result
+          if (!result)
+            return reject(new Error('Cloudinary upload result is undefined.')); // <-- AJOUTÉ : Vérification de result
           resolve(result.secure_url); // Retourne l'URL sécurisée de l'image
         },
       );
