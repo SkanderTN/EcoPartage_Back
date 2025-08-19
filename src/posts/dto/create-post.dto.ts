@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsNumber, Min, IsArray, ArrayMaxSize } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsNumber, Min, IsArray, ArrayMaxSize, IsUUID } from 'class-validator';
 import { PostType, PostCondition } from '../entities/post.entity';
 import { Type } from 'class-transformer';
 
@@ -66,4 +66,9 @@ export class CreatePostDto {
   @IsString()
   @IsOptional()  
   neighborhood?: string;
+
+  // Category
+  @IsUUID()
+  @IsOptional()
+  categoryId?: string;
 }

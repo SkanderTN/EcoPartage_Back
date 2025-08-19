@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Category } from './category.entity';
 
 
 export enum PostType {
@@ -92,6 +95,14 @@ export class Post {
 
   @Column({ nullable: true })
   neighborhood: string; // Quartier
+
+  // Category relationship
+  @ManyToOne(() => Category, category => category.posts, { nullable: true })
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
+
+  @Column({ nullable: true })
+  categoryId: string;
 
   @CreateDateColumn()
   createdAt: Date;

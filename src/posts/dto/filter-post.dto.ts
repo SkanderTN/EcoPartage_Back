@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsEnum, IsNumber, Min, IsInt } from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsNumber, Min, IsInt, IsUUID } from 'class-validator';
 import { PostType, PostCondition, PostStatus } from '../entities/post.entity';
 import { Type } from 'class-transformer';
 
@@ -20,11 +20,13 @@ export class FilterPostDto {
   status?: PostStatus;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   minPrice?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   maxPrice?: number;
@@ -32,6 +34,10 @@ export class FilterPostDto {
   @IsOptional()
   @IsString()
   q?: string; // recherche sur titre/description
+
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
 
   @IsOptional()
   @Type(() => Number)

@@ -22,7 +22,8 @@ export class PostsService {
   
   // FIND ALL + FILTERS
   async findAll(filterDto: FilterPostDto): Promise<{ data: Post[]; total: number; page: number; limit: number }> {
-    const qb = this.postRepository.createQueryBuilder('post');
+    const qb = this.postRepository.createQueryBuilder('post')
+      .leftJoinAndSelect('post.category', 'category');
 
     if (filterDto.city) {
       qb.andWhere('LOWER(post.city) = LOWER(:city)', { city: filterDto.city });
@@ -41,6 +42,9 @@ export class PostsService {
     }
     if (filterDto.maxPrice !== undefined) {
       qb.andWhere('post.price <= :maxPrice', { maxPrice: filterDto.maxPrice });
+    }
+    if (filterDto.categoryId) {
+      qb.andWhere('post.categoryId = :categoryId', { categoryId: filterDto.categoryId });
     }
     if (filterDto.q) {
       qb.andWhere(
@@ -68,7 +72,10 @@ export class PostsService {
 
   // FIND ONE
   async findOne(id: string): Promise<Post> {
-    const post = await this.postRepository.findOne({ where: { id } });
+    const post = await this.postRepository.findOne({ 
+      where: { id },
+      relations: ['category']
+    });
     if (!post) throw new NotFoundException('Post not found');
     return post;
   }
