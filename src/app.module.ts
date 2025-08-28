@@ -3,15 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
-import { Association } from './user/entities/association.entity';
-import { Company } from './user/entities/company.entity';
-import { SimpleUser } from './user/entities/simple-user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { ConfigModule } from '@nestjs/config'; 
-import { EventsModule } from './events/events.module'; 
-import { MessagesModule } from './messages/messages.module'; 
+import { ConfigModule } from '@nestjs/config';
+import { EventsModule } from './events/events.module';
+import { MessagesModule } from './messages/messages.module';
+import { PostsModule } from './posts/posts.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -25,14 +23,16 @@ import { MessagesModule } from './messages/messages.module';
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_NAME || 'eco_partage',
-      entities: [User, Association, Company, SimpleUser],
-      synchronize: true, 
+      autoLoadEntities: true,
+      synchronize: true,
     }),
     UserModule,
     AuthModule,
     CloudinaryModule,
-    EventsModule, 
-    MessagesModule, 
+    EventsModule,
+    MessagesModule,
+    PostsModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [AppService],

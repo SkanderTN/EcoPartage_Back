@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, TableInheritance } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, TableInheritance, OneToMany } from 'typeorm';
 import { UserRole } from '../dto/register-user.dto'; 
+import { Post } from '../../posts/entities/post.entity';
+
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'role' } })
 export class User {
@@ -23,4 +25,7 @@ export class User {
 
   @Column({ nullable: true, type: 'varchar' })
   profilePicture: string | null;
+
+  @OneToMany(() => Post, post => post.user) 
+  posts: Post[]; 
 }

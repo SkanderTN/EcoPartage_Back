@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Category } from './category.entity';
 
+import { User } from '../../user/entities/user.entity'; 
 
 export enum PostType {
   FREE = 'free',
@@ -95,6 +96,13 @@ export class Post {
 
   @Column({ nullable: true })
   neighborhood: string; // Quartier
+
+  @Column()
+  userId: number; 
+
+  @ManyToOne(() => User, user => user.posts) 
+  @JoinColumn({ name: 'userId' }) 
+  user: User; 
 
   // Category relationship
   @ManyToOne(() => Category, category => category.posts, { nullable: true })

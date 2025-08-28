@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards, 
+  Request, 
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,6 +18,11 @@ import { EstimatePriceDto } from './dto/estimate-price.dto';
 import { SuggestFieldDto } from './dto/suggest-field.dto';
 import { AiPriceEstimationService } from './services/ai-price-estimation.service';
 import { CategoryService } from './services/category.service';
+import { AuthGuard } from '@nestjs/passport';
+import { PostResponseDto, PostsResponseDto } from './dto/post-response.dto'; 
+import { Post as PostEntity } from './entities/post.entity'; 
+
+
 
 @Controller('posts')
 export class PostsController {
@@ -26,12 +33,14 @@ export class PostsController {
   ) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+    @UseGuards(AuthGuard('jwt')) 
+  create(@Body() createPostDto: CreatePostDto, @Request() req: any): Promise<PostEntity> {
+       const userId = req.user.userId;
+    return this.postsService.create(createPostDto, userId);
   }
 
   @Get()
-  findAll(@Query() filterDto: FilterPostDto) {
+  findAll(@Query() filterDto: FilterPostDto): Promise<PostsResponseDto> {
     return this.postsService.findAll(filterDto);
   }
 
@@ -52,7 +61,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<PostResponseDto> {
     return this.postsService.findOne(id);
   }
 

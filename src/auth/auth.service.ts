@@ -36,12 +36,12 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.userRepo.findOne({ where: { email } });
-    if (!user) throw new UnauthorizedException('Email not found');
+    if (!user) throw new UnauthorizedException('Adresse e-mail introuvable');
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new UnauthorizedException('Invalid password');
+    if (!match) throw new UnauthorizedException('Mot de passe incorrect');
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = { sub: user.id, email: user.email, role: user.role, firstName: user.firstName, lastName: user.lastName,};
     const token = this.jwtService.sign(payload);
     return {
       access_token: token,
@@ -50,6 +50,7 @@ export class AuthService {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
+      profilePicture : user.profilePicture
     };
   }
 }
