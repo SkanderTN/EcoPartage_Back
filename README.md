@@ -13,8 +13,6 @@ Robust API for ÉcoPartage — a circular-economy platform to reduce waste and g
 - **Categories**: predefined & custom categories.
 - **Media**: Image handling via Cloudinary (main + additional photos).
 
-> High-level architecture, features, and flows are summarized from the project report.
-
 ## 🧰 Tech Stack
 
 - **Runtime / Framework**: Node.js, **NestJS** (TypeScript, modular architecture)  
@@ -68,16 +66,13 @@ HUGGINGFACE_API_KEY=hf_xxxxxxxxx
 HF_MODEL=Qwen2.5-VL-7B-Instruct
 ```
 
-> Replace placeholders with values stored securely (CI secrets / environment).
-
 ### Install & Run (local)
 
 1. Install dependencies  
-2. (Optional) Start DB via Docker compose  
-3. Run migrations (if used)  
-4. Start dev server
+2. Start DB via Docker compose  
+3. Start dev server
 
-Example script names (adapt if package.json differs):
+Example script names :
 - start:dev — runs the dev server
 - build & start:prod — production
 
@@ -111,24 +106,6 @@ For full request/response examples, import the Postman collection in `/docs` (if
 
 ## 🧱 Data Model (primary entities)
 User, Post, Category, Message, Cart (+ items), reservation status on Post
-
-## 🧪 Testing
-Run unit and integration tests where configured:
-
-```bash
-npm run test
-npm run test:e2e
-```
-
-## 🖼️ Screenshots
-Add images under `/docs/screenshots` and reference them here:
-- Home, Auth, Create Listing w/ AI, Post Detail, Profile, Cart, About
-
-## 🗺️ Roadmap
-- Ratings & reviews  
-- Moderation & reporting  
-- Notifications center  
-- Advanced search (semantic)
 
 ## 📝 License
 MIT.
