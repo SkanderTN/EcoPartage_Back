@@ -1,98 +1,134 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ÉcoPartage – Backend (NestJS + PostgreSQL)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Robust API for ÉcoPartage — a circular-economy platform to reduce waste and give items a second life. This service powers authentication, listings (annonces), AI-assisted posting, reservations, real-time chat, and the cart/checkout flow.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ✨ Features
 
-## Description
+- **JWT Auth**: signup/signin, profile, secure routes.
+- **Listings CRUD**: create, read, update, delete with filters (type, category, status, location).
+- **AI Assistance**: price estimation from image, smart title suggestions, rich description generation, quantity/unit detection.
+- **Reservations**: status lifecycle — `AVAILABLE → RESERVED → COMPLETED` (+ cancel).
+- **Real-time Chat**: Socket.io gateway, rooms per listing, history & delivery confirmation.
+- **Cart & Checkout**: add/remove items, group reservation with checkout.
+- **Categories**: predefined & custom categories.
+- **Media**: Image handling via Cloudinary (main + additional photos).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+> High-level architecture, features, and flows are summarized from the project report.
 
-## Project setup
+## 🧰 Tech Stack
 
-```bash
-$ npm install
+- **Runtime / Framework**: Node.js, **NestJS** (TypeScript, modular architecture)  
+- **DB / ORM**: **PostgreSQL** + TypeORM  
+- **Auth / Security**: **JWT**, bcrypt  
+- **Real-time**: **Socket.io** (WebSocket gateway)  
+- **AI**: Hugging Face Vision model (Qwen2.5-VL-7B-Instruct) via a dedicated AI module  
+- **Media**: Cloudinary  
+- **Tooling**: Docker, Postman, Jest (tests), GitHub Actions (recommended)
+
+## 🗂️ Modules (example)
+- `AuthModule`, `PostsModule` (posts + categories), `AiModule`, `ChatModule`, `CartModule`, `CloudinaryModule`
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js ≥ 18 (LTS recommended)  
+- PostgreSQL ≥ 14  
+- npm or pnpm  
+- (Optional) Docker & Docker Compose
+
+### Environment
+
+Create a `.env` file at the project root (example values — DO NOT put real secrets in the repo):
+
+```env
+# Server
+PORT=4000
+CORS_ORIGIN=http://localhost:5173
+
+# PostgreSQL (either one format)
+DATABASE_URL=postgres://user:password@localhost:5432/ecopartage
+
+# OR:
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=user
+DB_PASS=password
+DB_NAME=ecopartage
+
+# Auth
+JWT_SECRET=your_jwt_secret_here
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud
+CLOUDINARY_API_KEY=xxxxxxxx
+CLOUDINARY_API_SECRET=xxxxxxxx
+
+# AI (Hugging Face)
+HUGGINGFACE_API_KEY=hf_xxxxxxxxx
+HF_MODEL=Qwen2.5-VL-7B-Instruct
 ```
 
-## Compile and run the project
+> Replace placeholders with values stored securely (CI secrets / environment).
+
+### Install & Run (local)
+
+1. Install dependencies  
+2. (Optional) Start DB via Docker compose  
+3. Run migrations (if used)  
+4. Start dev server
+
+Example script names (adapt if package.json differs):
+- start:dev — runs the dev server
+- build & start:prod — production
+
+**API Base URL:** http://localhost:4000
+
+## 📚 API Reference (summary)
+
+### Auth
+- POST /auth/signup — { email, password, firstName, lastName }  
+- POST /auth/signin — { email, password }  
+- GET /auth/profile — bearer token  
+- PATCH /auth/profile — bearer token + body
+
+### Posts / Listings
+- GET /posts — filters: type, category, status, location  
+- POST /posts — body: CreatePostDto, files: images[]  
+- GET /posts/:id  
+- PATCH /posts/:id  
+- DELETE /posts/:id  
+- POST /posts/:id/reserve — bearer token
+
+### Cart & Chat
+- GET /cart — bearer token  
+- POST /cart/add — { postId } + bearer token  
+- DELETE /cart/:itemId — bearer token  
+- POST /cart/checkout — bearer token  
+- GET /chat/:postId — bearer token (history)  
+- WS /socket.io — events: joinRoom, sendMessage
+
+For full request/response examples, import the Postman collection in `/docs` (if present).
+
+## 🧱 Data Model (primary entities)
+User, Post, Category, Message, Cart (+ items), reservation status on Post
+
+## 🧪 Testing
+Run unit and integration tests where configured:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run test
+npm run test:e2e
 ```
 
-## Run tests
+## 🖼️ Screenshots
+Add images under `/docs/screenshots` and reference them here:
+- Home, Auth, Create Listing w/ AI, Post Detail, Profile, Cart, About
 
-```bash
-# unit tests
-$ npm run test
+## 🗺️ Roadmap
+- Ratings & reviews  
+- Moderation & reporting  
+- Notifications center  
+- Advanced search (semantic)
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 📝 License
+MIT.
